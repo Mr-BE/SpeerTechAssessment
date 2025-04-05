@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.speertechassessment.ui.UserSearchBar
+import com.example.speertechassessment.ui.screens.SearchScreen
 import com.example.speertechassessment.ui.theme.SpeerTechAssessmentTheme
 
 class MainActivity : ComponentActivity() {
@@ -27,11 +28,7 @@ class MainActivity : ComponentActivity() {
                     Column(
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        UserSearchBar(
-                            textFieldState = rememberTextFieldState(),
-                            onSearch = {  },
-                            searchResults = listOf("")
-                        )
+
                     }
 
 

@@ -1,5 +1,7 @@
-package com.example.speertechassessment.viewmodel
+package com.example.speertechassessment.viewmodel.vm
 
+import com.example.speertechassessment.viewmodel.AppViewModel
+import com.example.speertechassessment.viewmodel.UiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher

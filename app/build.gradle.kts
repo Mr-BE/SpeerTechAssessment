@@ -37,9 +37,17 @@ android {
     buildFeatures {
         compose = true
     }
+      testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
+//retrofit
+    implementation (libs.retrofit2)
+    implementation(libs.gson)
+
+    //compose Nav
+    implementation(libs.composeNav)
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -49,8 +57,9 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    //retrofit
-    implementation (libs.retrofit2)
+    implementation(libs.androidx.ui.test.junit4.android)
+
+    testImplementation(libs.robolectric)
     testImplementation(libs.coroutinesTest)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
