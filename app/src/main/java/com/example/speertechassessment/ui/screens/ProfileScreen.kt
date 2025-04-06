@@ -48,10 +48,13 @@ import com.example.speertechassessment.viewmodel.UiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(username:String,navController:NavHostController, vm: AppViewModel){
+fun ProfileScreen(username:String,navController:NavHostController){
 
-//val vm: AppViewModel = viewModel()
-//    vm.getGitHubUser(username)
+val vm: AppViewModel = viewModel()
+    LaunchedEffect  (username){
+        vm.getGitHubUser(username)
+    }
+
     val state by vm.uiState.collectAsState()
 
 

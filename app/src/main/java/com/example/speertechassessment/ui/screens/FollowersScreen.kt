@@ -1,8 +1,10 @@
 package com.example.speertechassessment.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -40,7 +42,6 @@ fun FollowersScreen(
     username:String,
     viewModel: AppViewModel = viewModel(),
     navController: NavController,
-//    onUserClicked: (String) -> Unit,
     onBack: () -> Unit
 ){
 
@@ -72,7 +73,7 @@ fun FollowersScreen(
            Column(modifier = Modifier.shimmerLoading()) {
                ListItem(
 
-                   headlineContent = { Text("     ", modifier = Modifier.shimmerLoading()) },
+                   headlineContent = { Text("     ", modifier = Modifier.fillMaxWidth().shimmerLoading()) },
                    leadingContent = {
                        AsyncImage(
                            model = "user.avatar_url", contentDescription = null,
@@ -111,6 +112,7 @@ fun FollowersScreen(
                             },
                             modifier = Modifier.clickable {
                                 navController.navigate("${NavigationItem.Profile.route}/${user.login}")
+                                Log.d("Followers Screen", "Route is ${NavigationItem.Profile.route}/${user.login}")
 
                             }
                         )
