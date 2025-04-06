@@ -18,6 +18,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -71,12 +74,16 @@ val vm: AppViewModel = viewModel()
         Column(modifier = Modifier.padding(AppDimenVal.R.value)) {
 
             Row(horizontalArrangement = Arrangement.Center) {
-                Box(
+                Card(
+                    shape = RoundedCornerShape(12.dp),
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(AppDimenVal.XL.value))
-                        .padding(AppDimenVal.R.value)
-                        .background(color = Color.Blue)
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    )
+
                 ) {
                     Column(
                         modifier = Modifier.padding(
@@ -91,19 +98,15 @@ val vm: AppViewModel = viewModel()
                             contentDescription = null,
                         )
                         Spacer(modifier = Modifier.height(AppDimenVal.R.value))
-                        Text(
-                            user?.name ?: "John Doe",
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
                         if (user != null) {
-                            Text(
-                                user.login,
-                                color = Color.LightGray
-                            )
+                            user.name?.let {
+                                Text(it, style = MaterialTheme.typography.bodyLarge.copy(color = Color.Black, fontWeight = FontWeight.Bold))
+                            }
                         }
+                        if (user != null) {
+                            Text("@${user.login}", style = MaterialTheme.typography.bodyMedium.copy(color = Color.Black))
 
-                        Spacer(modifier = Modifier.height(AppDimenVal.S.value))
+                        Spacer(modifier = Modifier.height(AppDimenVal.R.value))
 
                         Row(horizontalArrangement = Arrangement.Center) { //Followers and following row
 
@@ -114,17 +117,16 @@ val vm: AppViewModel = viewModel()
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {//Followers
                                 Text(
-                                    "${user?.followers}",
-                                    color = Color.White,
-                                    fontWeight = FontWeight.Bold,
+                                    "${user.followers}",
+                                    style = MaterialTheme.typography.bodyLarge.copy(color = Color.Black, fontWeight = FontWeight.Bold)
                                 )
                                 Text(
                                     "Followers",
-                                    color = Color.LightGray
-                                )
+                                    style = MaterialTheme.typography.bodyMedium.copy(color = Color.Black))
+
                             }
 
-                            Spacer(modifier = Modifier.width(AppDimenVal.L.value))
+                            Spacer(modifier = Modifier.width(AppDimenVal.XL.value))
 
                             Column(horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier.clickable {
@@ -133,12 +135,12 @@ val vm: AppViewModel = viewModel()
                                 //Followers
                                 Text(
                                     "${user?.following}",
-                                    color = Color.White,
-                                    fontWeight = FontWeight.Bold,
+                                    style = MaterialTheme.typography.bodyLarge.copy(color = Color.Black, fontWeight = FontWeight.Bold)
+
                                 )
                                 Text(
                                     "Following",
-                                    color = Color.LightGray
+                                    style = MaterialTheme.typography.bodyMedium.copy(color = Color.Black)
                                 )
                             }
                         }
@@ -147,10 +149,8 @@ val vm: AppViewModel = viewModel()
 
                         Row {
                             Text(
-                                user?.bio ?: "Lorem ipsum dolor sit amet",
-                                textAlign = TextAlign.Center,
-                                color = Color.White
-                            )
+                                user.bio ?: "No Bio Available",
+                                style = MaterialTheme.typography.bodyMedium.copy(color = Color.Black))
                         }
 
                     }
@@ -163,4 +163,4 @@ val vm: AppViewModel = viewModel()
         }
     }
 
-}
+}}

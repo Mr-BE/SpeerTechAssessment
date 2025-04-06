@@ -68,7 +68,8 @@ fun FollowingScreen(
                     modifier = Modifier.clickable {
                         navController.navigate("${NavigationItem.Profile.route}/${user.login}")
 
-                    }
+                    },
+                    shadowElevation = AppDimenVal.XS.value
                 )
             }
         }

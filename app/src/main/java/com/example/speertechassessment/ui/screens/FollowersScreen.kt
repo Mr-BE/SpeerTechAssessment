@@ -114,7 +114,8 @@ fun FollowersScreen(
                                 navController.navigate("${NavigationItem.Profile.route}/${user.login}")
                                 Log.d("Followers Screen", "Route is ${NavigationItem.Profile.route}/${user.login}")
 
-                            }
+                            },
+                            shadowElevation = AppDimenVal.XS.value
                         )
                     }
                 }

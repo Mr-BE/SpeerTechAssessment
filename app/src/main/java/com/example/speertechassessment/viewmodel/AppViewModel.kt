@@ -36,6 +36,7 @@ class AppViewModel: ViewModel() {
             try {
                 val user = Repository(RetrofitInstance.api).getUser(username)
 
+
                 _uiState.value = UiState.Success(user)
             } catch (e:Exception){
                 _uiState.value = UiState.NotFound
