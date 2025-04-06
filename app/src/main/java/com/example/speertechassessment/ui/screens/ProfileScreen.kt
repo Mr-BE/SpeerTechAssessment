@@ -1,6 +1,7 @@
 package com.example.speertechassessment.ui.screens
 
 import android.content.res.Resources.Theme
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -36,19 +37,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import com.example.speertechassessment.data.AppDimenVal
+import com.example.speertechassessment.data.GitHubUser
 import com.example.speertechassessment.nav.NavigationItem
 import com.example.speertechassessment.viewmodel.AppViewModel
 import com.example.speertechassessment.viewmodel.UiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(navController:NavHostController, viewModel: AppViewModel){
+fun ProfileScreen(username:String,navController:NavHostController){
 
+val vm: AppViewModel = viewModel()
+    vm.getGitHubUser(username)
+    val state by vm.uiState.collectAsState()
 
-    val state by viewModel.uiState.collectAsState()
 
     val user = if (state is UiState.Success) {
         (state as UiState.Success).user

@@ -45,8 +45,9 @@ fun AppNavHost(
         }
 
         //profile
-        composable(NavigationItem.Profile.route){
-            ProfileScreen(navController, viewModel)
+        composable("${NavigationItem.Profile.route}/{username}"){ backstackEntry ->
+            val username = backstackEntry.arguments?.getString("username")?:""
+            ProfileScreen(username,navController)
 
         }
 
