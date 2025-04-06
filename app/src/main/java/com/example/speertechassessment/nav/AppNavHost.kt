@@ -52,8 +52,11 @@ fun AppNavHost(
         }
 
         //Followers
-        composable(NavigationItem.Followers.route) {
+        composable("${NavigationItem.Followers.route}/{username}") {
+                backstackEntry ->
+            val username = backstackEntry.arguments?.getString("username")?:""
             FollowersScreen(
+                username,
                 viewModel,
                 navController,
                 onBack = {navController.navigateUp()}

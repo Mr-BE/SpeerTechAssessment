@@ -58,7 +58,9 @@ fun SearchScreen(
         when (val state = uiState) {
             is UiState.Loading -> CircularProgressIndicator(modifier = Modifier.padding(16.dp))
             is UiState.Success -> LaunchedEffect(state) {
-                navController.navigate("${NavigationItem.Profile.route}/$username")
+                navController.navigate("${NavigationItem.Profile.route}/$username"){
+                    launchSingleTop
+                }
             }
             is UiState.NotFound -> Text("User not found", color = MaterialTheme.colorScheme.error)
             else -> {}

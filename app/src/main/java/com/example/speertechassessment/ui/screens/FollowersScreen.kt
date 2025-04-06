@@ -33,6 +33,7 @@ import com.example.speertechassessment.viewmodel.UiState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FollowersScreen(
+    username:String,
     viewModel: AppViewModel = viewModel(),
     navController: NavController,
 //    onUserClicked: (String) -> Unit,
@@ -41,20 +42,15 @@ fun FollowersScreen(
 
 
     val followers by viewModel.followers.collectAsState()
-    val state by viewModel.uiState.collectAsState()
 
-    val user = if (state is UiState.Success) {
-        (state as UiState.Success).user
-    } else null
 
-    if (user != null) {
-        LaunchedEffect(user.login) {
-            viewModel.getFollowers(user.login)
+        LaunchedEffect(username) {
+            viewModel.getFollowers(username)
         }
-    }
+
 
     Column{
-        TopAppBar(title = { Text("Followers of ${user?.login}")}, navigationIcon = {
+        TopAppBar(title = { Text("Followers of $username")}, navigationIcon = {
             IconButton(onClick = onBack) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
             }
@@ -71,12 +67,12 @@ fun FollowersScreen(
                     headlineContent = { Text(user.login) },
                     leadingContent = {
                         AsyncImage(model = user.avatar_url, contentDescription = null,
-                            modifier = Modifier.size(AppDimenVal.L.value).clip(CircleShape))
+                            modifier = Modifier
+                                .size(AppDimenVal.L.value)
+                                .clip(CircleShape))
                     },
                     modifier = Modifier.clickable {
-                        val vm = AppViewModel()
-                        vm.getGitHubUser(user.login)
-                        navController.navigate(NavigationItem.Profile.route)
+                        navController.navigate("${NavigationItem.Profile.route}/${user.login}")
 
                     }
                 )

@@ -106,7 +106,7 @@ val vm: AppViewModel = viewModel()
 
                             Column(
                                 modifier = Modifier.clickable {
-                                    navController.navigate(NavigationItem.Followers.route)
+                                    navController.navigate("${NavigationItem.Followers.route}/${user?.login}")
                                 },
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {//Followers
