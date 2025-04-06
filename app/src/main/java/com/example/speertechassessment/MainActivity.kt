@@ -13,6 +13,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.speertechassessment.nav.AppNavHost
@@ -20,10 +22,22 @@ import com.example.speertechassessment.ui.UserSearchBar
 import com.example.speertechassessment.ui.screens.SearchScreen
 import com.example.speertechassessment.ui.theme.SpeerTechAssessmentTheme
 import com.example.speertechassessment.viewmodel.AppViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
+        var keepSplashScreen = true
+
         super.onCreate(savedInstanceState)
+        splashScreen.setKeepOnScreenCondition {
+           keepSplashScreen
+        }
+        lifecycleScope.launch {
+            delay(3000)
+            keepSplashScreen = false
+        }
         enableEdgeToEdge()
         setContent {
 

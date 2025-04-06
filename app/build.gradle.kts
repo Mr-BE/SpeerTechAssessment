@@ -59,6 +59,8 @@ dependencies {
     implementation(libs.coilNetwork)
     implementation(libs.coilCompose)
 
+    //splash
+    implementation(libs.splash)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
