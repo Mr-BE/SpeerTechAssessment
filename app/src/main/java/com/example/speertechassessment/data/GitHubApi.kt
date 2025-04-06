@@ -1,7 +1,6 @@
 package com.example.speertechassessment.data
 
 import retrofit2.Retrofit
-import retrofit2.create
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -10,7 +9,7 @@ import retrofit2.http.Path
 //Holds user data
 data class GitHubUser(
     val login: String,
-    val avatar: String,
+    val avatar_url: String,
     val name: String?,
     val bio: String?,
     val followers: Int,

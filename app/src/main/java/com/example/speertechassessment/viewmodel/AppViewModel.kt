@@ -1,8 +1,10 @@
 package com.example.speertechassessment.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.speertechassessment.data.GitHubUser
+import com.example.speertechassessment.data.Repository
 import com.example.speertechassessment.data.RetrofitInstance
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +27,8 @@ class AppViewModel: ViewModel() {
             _uiState.value  = UiState.Loading
 
             try {
-                val user = RetrofitInstance.api.getUser(username)
+                val user = Repository(RetrofitInstance.api).getUser(username)
+                Log.d("ViewModel", "retrieved user is ${user}")
                 _uiState.value = UiState.Success(user)
             } catch (e:Exception){
                 _uiState.value = UiState.NotFound

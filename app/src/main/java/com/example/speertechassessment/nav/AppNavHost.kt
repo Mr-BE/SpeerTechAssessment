@@ -19,7 +19,7 @@ sealed class NavigationItem(val route: String) {
 }
 
 @Composable
-fun NavGraph(
+fun AppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     startDestination: String = NavigationItem.Search.route
