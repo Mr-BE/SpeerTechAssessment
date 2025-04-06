@@ -7,6 +7,7 @@ import retrofit2.http.Path
 
 
 //Holds user data
+
 data class GitHubUser(
     val login: String,
     val avatar_url: String,

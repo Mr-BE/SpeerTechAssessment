@@ -2,6 +2,7 @@ package com.example.speertechassessment.ui.screens
 
 import android.content.res.Resources.Theme
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,11 +14,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -36,8 +43,10 @@ import com.example.speertechassessment.nav.NavigationItem
 import com.example.speertechassessment.viewmodel.AppViewModel
 import com.example.speertechassessment.viewmodel.UiState
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(navController:NavHostController, viewModel: AppViewModel){
+
 
     val state by viewModel.uiState.collectAsState()
 
@@ -45,82 +54,102 @@ fun ProfileScreen(navController:NavHostController, viewModel: AppViewModel){
         (state as UiState.Success).user
     } else null
 
-    Column(modifier = Modifier.padding(AppDimenVal.R.value)) {
-        Row (horizontalArrangement = Arrangement.Center){
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(AppDimenVal.XL.value))
-                    .padding(AppDimenVal.R.value)
-                    .background(color = Color.Blue)
-            ) {
-                Column(
-                    modifier = Modifier.padding(horizontal = AppDimenVal.XL.value,
-                        vertical = AppDimenVal.R.value),
-                    horizontalAlignment = Alignment.CenterHorizontally) {
-                    AsyncImage(
-                        modifier = Modifier.clip(CircleShape),
-                        model = user?.avatar_url,
-                        contentDescription = null,
-                    )
-                    Spacer(modifier = Modifier.height(AppDimenVal.R.value))
-                    Text(
-                        user?.name ?: "John Doe",
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                    if (user != null) {
-                        Text(
-                            user.login,
-                            color = Color.LightGray
+    Column {
+        TopAppBar(title = { Text("${user?.login}")}, navigationIcon = {
+            IconButton(onClick = { navController.navigateUp() }) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+            }
+        })
+        Column(modifier = Modifier.padding(AppDimenVal.R.value)) {
+
+            Row(horizontalArrangement = Arrangement.Center) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(AppDimenVal.XL.value))
+                        .padding(AppDimenVal.R.value)
+                        .background(color = Color.Blue)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(
+                            horizontal = AppDimenVal.XL.value,
+                            vertical = AppDimenVal.R.value
+                        ),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        AsyncImage(
+                            modifier = Modifier.clip(CircleShape),
+                            model = user?.avatar_url,
+                            contentDescription = null,
                         )
-                    }
-
-                    Spacer(modifier = Modifier.height(AppDimenVal.S.value))
-
-                    Row(horizontalArrangement = Arrangement.Center) { //Followers and following row
-
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {//Followers
+                        Spacer(modifier = Modifier.height(AppDimenVal.R.value))
+                        Text(
+                            user?.name ?: "John Doe",
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                        if (user != null) {
                             Text(
-                                "${user?.followers}",
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold,
-                            )
-                            Text(
-                                "Followers",
+                                user.login,
                                 color = Color.LightGray
                             )
                         }
 
-                        Spacer(modifier = Modifier.width(AppDimenVal.L.value))
+                        Spacer(modifier = Modifier.height(AppDimenVal.S.value))
 
-                        Column (horizontalAlignment = Alignment.CenterHorizontally) {//Followers
-                            //Followers
+                        Row(horizontalArrangement = Arrangement.Center) { //Followers and following row
+
+                            Column(
+                                modifier = Modifier.clickable {
+                                    navController.navigate(NavigationItem.Followers.route)
+                                },
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {//Followers
+                                Text(
+                                    "${user?.followers}",
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                                Text(
+                                    "Followers",
+                                    color = Color.LightGray
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.width(AppDimenVal.L.value))
+
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {//Followers
+                                //Followers
+                                Text(
+                                    "${user?.following}",
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                                Text(
+                                    "Following",
+                                    color = Color.LightGray
+                                )
+                            }
+                        }
+
+                        Spacer(Modifier.height(AppDimenVal.L.value))
+
+                        Row {
                             Text(
-                                "${user?.following}",
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold,
-                            )
-                            Text(
-                                "Following",
-                                color = Color.LightGray
+                                user?.bio ?: "Lorem ipsum dolor sit amet",
+                                textAlign = TextAlign.Center,
+                                color = Color.White
                             )
                         }
+
                     }
-
-                    Spacer(Modifier.height(AppDimenVal.L.value))
-
-                    Row {
-                        Text(user?.bio?:"Lorem ipsum dolor sit amet", textAlign = TextAlign.Center, color = Color.White)
-                    }
-
                 }
             }
+
+            Spacer(modifier = Modifier.height(AppDimenVal.R.value))
+
+
         }
-
-        Spacer(modifier = Modifier.height(AppDimenVal.R.value))
-
-
     }
 
 }
