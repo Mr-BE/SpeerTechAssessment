@@ -10,6 +10,7 @@ import com.example.speertechassessment.ui.screens.FollowersScreen
 import com.example.speertechassessment.ui.screens.FollowingScreen
 import com.example.speertechassessment.ui.screens.ProfileScreen
 import com.example.speertechassessment.ui.screens.SearchScreen
+import com.example.speertechassessment.ui.screens.UserNotFoundScreen
 import com.example.speertechassessment.viewmodel.AppViewModel
 
 
@@ -17,13 +18,15 @@ enum class Screen {
     SEARCH,
     PROFILE,
     FOLLOWERS,
-    FOLLOWING
+    FOLLOWING,
+    NOT_FOUND
 }
 sealed class NavigationItem(val route: String) {
     object Search : NavigationItem(Screen.SEARCH.name)
     object Profile : NavigationItem(Screen.PROFILE.name)
     object Followers: NavigationItem(Screen.FOLLOWERS.name)
     object Following: NavigationItem(Screen.FOLLOWING.name)
+    object Not_Found: NavigationItem(Screen.NOT_FOUND.name)
 
 }
 
@@ -75,6 +78,12 @@ fun AppNavHost(
                 navController,
                 onBack = {navController.navigateUp()}
             )
+
+        }
+
+        //NOt found
+        composable(NavigationItem.Not_Found.route){
+            UserNotFoundScreen(navController)
 
         }
     }

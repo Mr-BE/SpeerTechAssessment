@@ -68,7 +68,7 @@ fun SearchScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Search",
-                color = Color.Black)
+                style = MaterialTheme.typography.bodyMedium)
         }
 
         when (val state = uiState) {
@@ -168,7 +168,7 @@ fun SearchScreen(
                     launchSingleTop
                 }
             }
-            is UiState.NotFound -> Text("User not found", color = MaterialTheme.colorScheme.error)
+            is UiState.NotFound -> Text("User not found \uD83D\uDE14", color = MaterialTheme.colorScheme.error)
             else -> {}
         }
     }
