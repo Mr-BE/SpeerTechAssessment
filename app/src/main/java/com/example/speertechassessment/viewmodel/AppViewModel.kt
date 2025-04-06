@@ -8,6 +8,7 @@ import com.example.speertechassessment.data.Repository
 import com.example.speertechassessment.data.RetrofitInstance
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 sealed class UiState { //cover all possibilities
@@ -22,10 +23,11 @@ class AppViewModel: ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle) //innit (internal)
     val uiState:StateFlow<UiState> = _uiState
 
-    var retrievedUser = GitHubUser("", "", "", "", 0, 0)
+    private val _followers = MutableStateFlow<List<GitHubUser>>(emptyList())
+    val followers: StateFlow<List<GitHubUser>> = _followers.asStateFlow()
 
-
-
+    private val _following = MutableStateFlow<List<GitHubUser>>(emptyList())
+    val following: StateFlow<List<GitHubUser>> = _following.asStateFlow()
 
     fun getGitHubUser(username: String) {
         viewModelScope.launch {
@@ -34,10 +36,30 @@ class AppViewModel: ViewModel() {
             try {
                 val user = Repository(RetrofitInstance.api).getUser(username)
                 Log.d("ViewModel", "retrieved user is ${user}")
-                retrievedUser = user
                 _uiState.value = UiState.Success(user)
             } catch (e:Exception){
                 _uiState.value = UiState.NotFound
+            }
+        }
+    }
+
+
+    fun getFollowers(username: String) {
+        viewModelScope.launch {
+            try {
+                _followers.value = Repository(RetrofitInstance.api).getFollowers(username)
+            } catch (e: Exception) {
+                _followers.value = emptyList()
+            }
+        }
+    }
+
+    fun getFollowing(username: String) {
+        viewModelScope.launch {
+            try {
+                _following.value = Repository(RetrofitInstance.api).getFollowing(username)
+            } catch (e: Exception) {
+                _following.value = emptyList()
             }
         }
     }

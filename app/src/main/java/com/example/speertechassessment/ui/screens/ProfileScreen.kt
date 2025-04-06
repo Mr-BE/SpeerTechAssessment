@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -19,11 +20,14 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
@@ -34,7 +38,12 @@ import com.example.speertechassessment.viewmodel.UiState
 
 @Composable
 fun ProfileScreen(navController:NavHostController, viewModel: AppViewModel){
-    val user = viewModel.retrievedUser
+
+    val state by viewModel.uiState.collectAsState()
+
+    val user = if (state is UiState.Success) {
+        (state as UiState.Success).user
+    } else null
 
     Column(modifier = Modifier.padding(AppDimenVal.R.value)) {
         Row (horizontalArrangement = Arrangement.Center){
@@ -50,15 +59,22 @@ fun ProfileScreen(navController:NavHostController, viewModel: AppViewModel){
                         vertical = AppDimenVal.R.value),
                     horizontalAlignment = Alignment.CenterHorizontally) {
                     AsyncImage(
-                        model = user.avatar_url,
+                        modifier = Modifier.clip(CircleShape),
+                        model = user?.avatar_url,
                         contentDescription = null,
                     )
                     Spacer(modifier = Modifier.height(AppDimenVal.R.value))
                     Text(
-                        user.name ?: "John Doe",
+                        user?.name ?: "John Doe",
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
+                    if (user != null) {
+                        Text(
+                            user.login,
+                            color = Color.LightGray
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(AppDimenVal.S.value))
 
@@ -66,7 +82,7 @@ fun ProfileScreen(navController:NavHostController, viewModel: AppViewModel){
 
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {//Followers
                             Text(
-                                "${user.followers}",
+                                "${user?.followers}",
                                 color = Color.White,
                                 fontWeight = FontWeight.Bold,
                             )
@@ -81,7 +97,7 @@ fun ProfileScreen(navController:NavHostController, viewModel: AppViewModel){
                         Column (horizontalAlignment = Alignment.CenterHorizontally) {//Followers
                             //Followers
                             Text(
-                                "${user.following}",
+                                "${user?.following}",
                                 color = Color.White,
                                 fontWeight = FontWeight.Bold,
                             )
@@ -90,6 +106,12 @@ fun ProfileScreen(navController:NavHostController, viewModel: AppViewModel){
                                 color = Color.LightGray
                             )
                         }
+                    }
+
+                    Spacer(Modifier.height(AppDimenVal.L.value))
+
+                    Row {
+                        Text(user?.bio?:"Lorem ipsum dolor sit amet", textAlign = TextAlign.Center, color = Color.White)
                     }
 
                 }
