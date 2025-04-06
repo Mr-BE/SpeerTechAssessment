@@ -48,10 +48,10 @@ import com.example.speertechassessment.viewmodel.UiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(username:String,navController:NavHostController){
+fun ProfileScreen(username:String,navController:NavHostController, vm: AppViewModel){
 
-val vm: AppViewModel = viewModel()
-    vm.getGitHubUser(username)
+//val vm: AppViewModel = viewModel()
+//    vm.getGitHubUser(username)
     val state by vm.uiState.collectAsState()
 
 
@@ -123,7 +123,10 @@ val vm: AppViewModel = viewModel()
 
                             Spacer(modifier = Modifier.width(AppDimenVal.L.value))
 
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {//Followers
+                            Column(horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.clickable {
+                                    navController.navigate("${NavigationItem.Following.route}/${user?.login}")
+                                },) {//Followers
                                 //Followers
                                 Text(
                                     "${user?.following}",

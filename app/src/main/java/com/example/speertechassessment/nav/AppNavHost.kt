@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.speertechassessment.ui.screens.FollowersScreen
+import com.example.speertechassessment.ui.screens.FollowingScreen
 import com.example.speertechassessment.ui.screens.ProfileScreen
 import com.example.speertechassessment.ui.screens.SearchScreen
 import com.example.speertechassessment.viewmodel.AppViewModel
@@ -47,7 +48,7 @@ fun AppNavHost(
         //profile
         composable("${NavigationItem.Profile.route}/{username}"){ backstackEntry ->
             val username = backstackEntry.arguments?.getString("username")?:""
-            ProfileScreen(username,navController)
+            ProfileScreen(username,navController, viewModel)
 
         }
 
@@ -56,6 +57,19 @@ fun AppNavHost(
                 backstackEntry ->
             val username = backstackEntry.arguments?.getString("username")?:""
             FollowersScreen(
+                username,
+                viewModel,
+                navController,
+                onBack = {navController.navigateUp()}
+            )
+
+        }
+
+        //Following
+        composable("${NavigationItem.Following.route}/{username}") {
+                backstackEntry ->
+            val username = backstackEntry.arguments?.getString("username")?:""
+            FollowingScreen (
                 username,
                 viewModel,
                 navController,
