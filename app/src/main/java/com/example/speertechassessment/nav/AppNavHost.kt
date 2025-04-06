@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.speertechassessment.ui.screens.ProfileScreen
 import com.example.speertechassessment.ui.screens.SearchScreen
+import com.example.speertechassessment.viewmodel.AppViewModel
 
 
 enum class Screen {
@@ -22,7 +23,8 @@ sealed class NavigationItem(val route: String) {
 fun AppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    startDestination: String = NavigationItem.Search.route
+    startDestination: String = NavigationItem.Search.route,
+    viewModel: AppViewModel
     ) {
 
     NavHost(
@@ -32,13 +34,13 @@ fun AppNavHost(
     ) {
         //search
         composable(NavigationItem.Search.route){
-            SearchScreen(navController)
+            SearchScreen(navController, viewModel)
         }
 
         //profile
         composable(NavigationItem.Profile.route){ navBackStackEntry ->
             val username = navBackStackEntry.arguments?.getString("username")?:""
-            ProfileScreen(navController, username)
+            ProfileScreen(navController, viewModel)
 
         }
     }

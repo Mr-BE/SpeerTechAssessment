@@ -55,8 +55,9 @@ dependencies {
     //compose Nav
     implementation(libs.composeNav)
 
-//    implementation(libs.javaagent)
-
+//    coil
+    implementation(libs.coilNetwork)
+    implementation(libs.coilCompose)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

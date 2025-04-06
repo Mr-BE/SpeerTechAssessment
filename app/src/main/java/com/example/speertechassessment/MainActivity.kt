@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
                     Column(
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        AppNavHost(navController = rememberNavController())
+                        AppNavHost(navController = navController, viewModel = appViewModel )
 
                     }
 

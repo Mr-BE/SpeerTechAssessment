@@ -30,7 +30,7 @@ import com.example.speertechassessment.viewmodel.UiState
 @Composable
 fun SearchScreen(
     navController: NavHostController,
-                 viewModel: AppViewModel = viewModel()
+                 viewModel: AppViewModel
 ) {
     var username by remember { mutableStateOf("") }
     val uiState by viewModel.uiState.collectAsState()

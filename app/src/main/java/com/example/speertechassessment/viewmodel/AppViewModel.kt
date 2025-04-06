@@ -22,6 +22,11 @@ class AppViewModel: ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle) //innit (internal)
     val uiState:StateFlow<UiState> = _uiState
 
+    var retrievedUser = GitHubUser("", "", "", "", 0, 0)
+
+
+
+
     fun getGitHubUser(username: String) {
         viewModelScope.launch {
             _uiState.value  = UiState.Loading
@@ -29,6 +34,7 @@ class AppViewModel: ViewModel() {
             try {
                 val user = Repository(RetrofitInstance.api).getUser(username)
                 Log.d("ViewModel", "retrieved user is ${user}")
+                retrievedUser = user
                 _uiState.value = UiState.Success(user)
             } catch (e:Exception){
                 _uiState.value = UiState.NotFound
