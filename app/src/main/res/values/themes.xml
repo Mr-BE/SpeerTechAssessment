@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.SpeerTechAssessment" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:windowSplashScreenBackground">@color/white</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@drawable/launcher</item>
-        <item name="android:windowSplashScreenAnimationDuration">2000</item>
+    <!-- FIX: launch theme for core-splashscreen. The platform-only android:windowSplashScreen* attributes
+         did nothing below API 31 (minSdk is 28), so those devices got a blank window instead of the icon. -->
+    <style name="Theme.SpeerTechAssessment.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/launcher</item>
+        <item name="windowSplashScreenAnimationDuration">2000</item>
+        <item name="postSplashScreenTheme">@style/Theme.SpeerTechAssessment</item>
     </style>
+
+    <style name="Theme.SpeerTechAssessment" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>

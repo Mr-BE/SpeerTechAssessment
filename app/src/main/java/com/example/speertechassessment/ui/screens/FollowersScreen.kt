@@ -1,42 +1,14 @@
 package com.example.speertechassessment.ui.screens
 
-import android.util.Log
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil3.compose.AsyncImage
-import com.example.speertechassessment.data.AppDimenVal
 import com.example.speertechassessment.nav.NavigationItem
-import com.example.speertechassessment.ui.effect.shimmerLoading
 import com.example.speertechassessment.viewmodel.AppViewModel
-import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FollowersScreen(
     username:String,
@@ -44,83 +16,21 @@ fun FollowersScreen(
     navController: NavController,
     onBack: () -> Unit
 ){
+    val followers by viewModel.followers.collectAsStateWithLifecycle()
 
-    var isLoading by remember { mutableStateOf(true) }
-
-
-
-
-    val followers by viewModel.followers.collectAsState()
-
-
-    LaunchedEffect(isLoading) { //simulate long load time
-        if (isLoading) {
-            delay(3000)
-            isLoading = false
-
-            viewModel.getFollowers(username)
-        }
+    // FIX: loading state now lives in the ViewModel. The local isLoading flag flipped to false before
+    // the request started, so the spinner/shimmer never reflected it and another user's list could flash.
+    LaunchedEffect(username) {
+        viewModel.getFollowers(username)
     }
 
-
-
-    PullToRefreshBox(
-        modifier = Modifier.fillMaxSize(),
-        isRefreshing = isLoading,
-        onRefresh = {isLoading = true}
-    )  {
-       if (isLoading){
-           Column(modifier = Modifier.shimmerLoading()) {
-               ListItem(
-
-                   headlineContent = { Text("     ", modifier = Modifier.fillMaxWidth().shimmerLoading()) },
-                   leadingContent = {
-                       AsyncImage(
-                           model = "user.avatar_url", contentDescription = null,
-                           modifier = Modifier
-                               .size(AppDimenVal.L.value)
-                               .clip(CircleShape)
-                               .shimmerLoading()
-                       )
-           })
-           }
-       }
-        else{
-            Column {
-                TopAppBar(title = { Text("Followers of $username") }, navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                })
-
-                LazyColumn {
-                    items(followers) { user ->
-                        //                UserItem(user, onItemClick = {
-                        //                        selectedUser -> viewModel.getGitHubUser(selectedUser.login)
-                        //                    navController.navigate(NavigationItem.Profile)
-                        //                })
-
-                        ListItem(
-                            headlineContent = { Text(user.login) },
-                            leadingContent = {
-                                AsyncImage(
-                                    model = user.avatar_url, contentDescription = null,
-                                    modifier = Modifier
-                                        .size(AppDimenVal.L.value)
-                                        .clip(CircleShape)
-                                )
-                            },
-                            modifier = Modifier.clickable {
-                                navController.navigate("${NavigationItem.Profile.route}/${user.login}")
-                                Log.d("Followers Screen", "Route is ${NavigationItem.Profile.route}/${user.login}")
-
-                            },
-                            shadowElevation = AppDimenVal.XS.value
-                        )
-                    }
-                }
-            }
-        }
-    }
-    }
-
+    UserListScreen(
+        title = "Followers of $username",
+        username = username,
+        state = followers,
+        emptyMessage = "$username has no followers yet",
+        onRefresh = { viewModel.getFollowers(username, refresh = true) },
+        onUserClick = { user -> navController.navigate(NavigationItem.Profile.withUsername(user.login)) },
+        onBack = onBack,
+    )
+}

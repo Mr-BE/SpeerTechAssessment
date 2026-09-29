@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# OPT (needed now that R8 is on): Gson 2.10 ships no R8 rules and maps JSON keys onto fields
+# reflectively, so keep the API model's fields and their @SerializedName names.
+-keepattributes Signature, RuntimeVisibleAnnotations
+-keep class com.google.gson.annotations.SerializedName
+-keep class com.example.speertechassessment.data.GitHubUser { <fields>; }

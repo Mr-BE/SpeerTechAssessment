@@ -1,16 +1,20 @@
 package com.example.speertechassessment.nav
 
+import android.net.Uri
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.speertechassessment.data.Repository
 import com.example.speertechassessment.ui.screens.FollowersScreen
 import com.example.speertechassessment.ui.screens.FollowingScreen
 import com.example.speertechassessment.ui.screens.ProfileScreen
 import com.example.speertechassessment.ui.screens.SearchScreen
-import com.example.speertechassessment.ui.screens.UserNotFoundScreen
 import com.example.speertechassessment.viewmodel.AppViewModel
 
 
@@ -18,25 +22,30 @@ enum class Screen {
     SEARCH,
     PROFILE,
     FOLLOWERS,
-    FOLLOWING,
-    NOT_FOUND
+    FOLLOWING
 }
 sealed class NavigationItem(val route: String) {
     object Search : NavigationItem(Screen.SEARCH.name)
     object Profile : NavigationItem(Screen.PROFILE.name)
     object Followers: NavigationItem(Screen.FOLLOWERS.name)
     object Following: NavigationItem(Screen.FOLLOWING.name)
-    object Not_Found: NavigationItem(Screen.NOT_FOUND.name)
+    // FIX: Not_Found route removed; the profile shows not-found inline, so Back can't loop into it
 
+    // OPT: one place builds "<route>/<username>" (encoded, so any input is a valid route)
+    fun withUsername(username: String) = "$route/${Uri.encode(username)}"
 }
 
 @Composable
 fun AppNavHost(
-    modifier: Modifier = Modifier,
     navController: NavHostController,
+    modifier: Modifier = Modifier,
     startDestination: String = NavigationItem.Search.route,
-    viewModel: AppViewModel
+    repository: Repository = Repository.default, // injectable for UI tests
     ) {
+
+    // FIX: every destination gets its own ViewModel (scoped to its back-stack entry). One shared
+    // instance leaked profile/followers state between users and kept a stale search result alive.
+    val vmFactory = remember(repository) { viewModelFactory { initializer { AppViewModel(repository) } } }
 
     NavHost(
         modifier = modifier,
@@ -45,13 +54,13 @@ fun AppNavHost(
     ) {
         //search
         composable(NavigationItem.Search.route){
-            SearchScreen(navController, viewModel)
+            SearchScreen(navController, viewModel(factory = vmFactory))
         }
 
         //profile
         composable("${NavigationItem.Profile.route}/{username}"){ backstackEntry ->
             val username = backstackEntry.arguments?.getString("username")?:""
-            ProfileScreen(username,navController)
+            ProfileScreen(username, navController, viewModel(factory = vmFactory))
 
         }
 
@@ -61,7 +70,7 @@ fun AppNavHost(
             val username = backstackEntry.arguments?.getString("username")?:""
             FollowersScreen(
                 username,
-                viewModel,
+                viewModel(factory = vmFactory),
                 navController,
                 onBack = {navController.navigateUp()}
             )
@@ -74,16 +83,10 @@ fun AppNavHost(
             val username = backstackEntry.arguments?.getString("username")?:""
             FollowingScreen (
                 username,
-                viewModel,
+                viewModel(factory = vmFactory),
                 navController,
                 onBack = {navController.navigateUp()}
             )
-
-        }
-
-        //NOt found
-        composable(NavigationItem.Not_Found.route){
-            UserNotFoundScreen(navController)
 
         }
     }

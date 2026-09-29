@@ -6,22 +6,26 @@ plugins {
 }
 
 android {
+    // FIX: namespace must match the Kotlin source package; it resolves ".MainActivity" in the manifest.
+    // With "dev.mrbe..." the app crashed on launch (ClassNotFoundException). applicationId alone sets the Play Store ID.
     namespace = "com.example.speertechassessment"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.speertechassessment"
+        applicationId = "dev.mrbe.speertechassessment"
         minSdk = 28
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 3 // re-release: 2 (1.1) crashed on launch
+        versionName = "1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            // OPT: R8 code + resource shrinking for release (was off). Gson keep rules live in proguard-rules.pro
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -41,6 +45,8 @@ android {
 
     tasks.withType<Test> {
         jvmArgs("-XX:+EnableDynamicAgentLoading")
+        // FIX: Compose UI tests need the host activity from the debug-only ui-test-manifest; release can't run them
+        if (name == "testReleaseUnitTest") filter.excludeTestsMatching("*SearchScreenTest")
     }
     //
       testOptions.unitTests.isIncludeAndroidResources = true
@@ -63,14 +69,16 @@ dependencies {
     implementation(libs.splash)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.runtime.compose) // OPT: collectAsStateWithLifecycle
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.androidx.ui.test.junit4.android)
 
+    // FIX: the Compose UI test lib was an `implementation` dep, shipping JUnit + Espresso in the release APK
+    testImplementation(libs.androidx.ui.test.junit4)
     testImplementation(libs.robolectric)
     testImplementation(libs.coroutinesTest)
     testImplementation(libs.mockk)
